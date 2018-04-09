@@ -136,20 +136,34 @@ void ALineTracerCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 
 void ALineTracerCharacter::OnFire()
 {
-	// variable to see if our line trace hits anything
-	FHitResult OutHit;
-	// get the Gun's location
-	FVector Start =	FP_Gun->GetComponentLocation();
+	// see if the line trace hit anything
+	FHitResult HitResult;
+	// get the forawrd vector from where the player is looking
+	FVector CameraForward = FVector(FirstPersonCameraComponent->GetForwardVector());
+	// end the line trace 2000 units from the start
+	float LineLength = 2000;
 
-	// forward vector of where the player is looking (to get it, get the forward vector from the camera)
-	FVector ForwardVector = FirstPersonCameraComponent->GetForwardVector();
-	// where to end the line trace
-	FVector End = ((ForwardVector * 1000.0f) + Start);
-	// handle collision event in the line trace
+	// grab the control rotation from the actor character
+	FRotator SpawnRotation = GetControlRotation();
+	// point in from of the gun
+	FVector StartLocation;
+	if (FP_MuzzleLocation != nullptr)
+	{
+		StartLocation = FP_MuzzleLocation->GetComponentLocation();
+	}
+	else
+	{
+		StartLocation = GetActorLocation() + SpawnRotation.RotateVector(GunOffset);
+	}
+	// start location plus camera forward vector multiplied by the trace line lenght
+	FVector EndLocation = StartLocation + (FirstPersonCameraComponent->GetForwardVector() * LineLength);
+
+	// variable to handle collision events in the line trace
 	FCollisionQueryParams CollisionParams;
-	
-	// visualise the line trace using debug draw tool
-	DrawDebugLine(GetWorld(), Start, End, FColor::Green, true);
+	// set HitResult - if the hit was successfull FHitResult will return the hit actor
+	GetWorld()->LineTraceSingleByChannel(HitResult, StartLocation, EndLocation, ECollisionChannel::ECC_PhysicsBody, CollisionParams);
+	// draw the trace line
+	DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Red, true, -1, 0, 1.0f);
 
 	// try and play the sound if specified
 	if (FireSound != NULL)
