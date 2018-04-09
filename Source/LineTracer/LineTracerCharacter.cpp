@@ -146,13 +146,9 @@ void ALineTracerCharacter::OnFire()
 
 	// grab the control rotation from the actor character
 	FRotator SpawnRotation = GetControlRotation();
-	// point in frot of the gun
+	// function from the starter content - point in frot of the gun - MuzzleOffset is in camera space, so transform it to world space before
+	// offsetting from the character location to find the final muzzle position
 	FVector StartLocation = ((FP_MuzzleLocation != nullptr) ? FP_MuzzleLocation->GetComponentLocation() : GetActorLocation()) + SpawnRotation.RotateVector(GunOffset);
-
-	// debug log
-	UE_LOG(LogClass, Log, TEXT("Start Location: %s"), *StartLocation.ToString());
-	UE_LOG(LogClass, Log, TEXT("Spawn Rotation: %s"), *SpawnRotation.ToString());
-	UE_LOG(LogClass, Log, TEXT("Forward Vector: %s"), *FirstPersonCameraComponent->GetForwardVector().ToString());
 
 	// start location plus camera forward vector multiplied by the trace line lenght
 	FVector EndLocation = StartLocation + (FirstPersonCameraComponent->GetForwardVector() * LineLength);
@@ -172,9 +168,7 @@ void ALineTracerCharacter::OnFire()
 		if (Hit.GetActor()->IsRootComponentMovable()) {
 			// cast the hit actor's mesh to MeshRootComp
 			UStaticMeshComponent* MeshRootComp = Cast<UStaticMeshComponent>(Hit.GetActor()->GetRootComponent());
-			// debug log
-			UE_LOG(LogClass, Log, TEXT("I Hit: %s"), *Hit.GetActor()->GetName());
-			UE_LOG(LogClass, Log, TEXT("Mesh Mass: %f"), MeshRootComp->GetMass());
+			
 			// Add force to the hit actor's mesh root component
 			MeshRootComp->AddForce(CameraForward * 100000 * MeshRootComp->GetMass());
 		}
