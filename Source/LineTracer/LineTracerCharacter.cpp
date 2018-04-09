@@ -137,7 +137,7 @@ void ALineTracerCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 void ALineTracerCharacter::OnFire()
 {
 	// see if the line trace hit anything
-	FHitResult HitResult;
+	FHitResult Hit;
 	// get the forawrd vector from where the player is looking
 	FVector CameraForward = FVector(FirstPersonCameraComponent->GetForwardVector());
 	// end the line trace 2000 units from the start
@@ -161,9 +161,22 @@ void ALineTracerCharacter::OnFire()
 	// variable to handle collision events in the line trace
 	FCollisionQueryParams CollisionParams;
 	// set HitResult - if the hit was successfull FHitResult will return the hit actor
-	GetWorld()->LineTraceSingleByChannel(HitResult, StartLocation, EndLocation, ECollisionChannel::ECC_PhysicsBody, CollisionParams);
+	GetWorld()->LineTraceSingleByChannel(Hit, StartLocation, EndLocation, ECollisionChannel::ECC_PhysicsBody, CollisionParams);
 	// draw the trace line
 	DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Red, true, -1, 0, 1.0f);
+
+	// if Hit returned the hit actor
+	if (Hit.GetActor())
+	{
+		// check if the hit actor root component is movable
+		if (Hit.GetActor()->IsRootComponentMovable())
+		{
+			// cast the hit actor's mesh to MeshRootComp
+			UStaticMeshComponent* MeshRootComp = Cast<UStaticMeshComponent>(Hit.GetActor()->GetRootComponent());
+			// Add force to the hit actor's mesh root component
+			MeshRootComp->AddForce(CameraForward * 100000 * MeshRootComp->GetMass());
+		}
+	}
 
 	// try and play the sound if specified
 	if (FireSound != NULL)
