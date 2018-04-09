@@ -136,6 +136,21 @@ void ALineTracerCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 
 void ALineTracerCharacter::OnFire()
 {
+	// variable to see if our line trace hits anything
+	FHitResult OutHit;
+	// get the Gun's location
+	FVector Start =	FP_Gun->GetComponentLocation();
+
+	// forward vector of where the player is looking (to get it, get the forward vector from the camera)
+	FVector ForwardVector = FirstPersonCameraComponent->GetForwardVector();
+	// where to end the line trace
+	FVector End = ((ForwardVector * 1000.0f) + Start);
+	// handle collision event in the line trace
+	FCollisionQueryParams CollisionParams;
+	
+	// visualise the line trace using debug draw tool
+	DrawDebugLine(GetWorld(), Start, End, FColor::Green, true);
+
 	// try and play the sound if specified
 	if (FireSound != NULL)
 	{
