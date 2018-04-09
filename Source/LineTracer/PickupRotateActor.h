@@ -29,7 +29,7 @@ public:
 	UPROPERTY(EditAnywhere)
 	USceneComponent* HoldingComp;
 
-	UFUNCTOIN()
+	UFUNCTION()
 	void RotateActor();
 
 	UFUNCTION()
