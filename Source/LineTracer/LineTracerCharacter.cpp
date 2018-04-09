@@ -140,41 +140,61 @@ void ALineTracerCharacter::OnFire()
 	FHitResult Hit;
 	// get the forawrd vector from where the player is looking
 	FVector CameraForward = FVector(FirstPersonCameraComponent->GetForwardVector());
+
 	// end the line trace 2000 units from the start
 	float LineLength = 2000;
 
 	// grab the control rotation from the actor character
 	FRotator SpawnRotation = GetControlRotation();
-	// point in from of the gun
-	FVector StartLocation;
-	if (FP_MuzzleLocation != nullptr)
-	{
-		StartLocation = FP_MuzzleLocation->GetComponentLocation();
-	}
-	else
-	{
-		StartLocation = GetActorLocation() + SpawnRotation.RotateVector(GunOffset);
-	}
+	// point in frot of the gun
+	FVector StartLocation = ((FP_MuzzleLocation != nullptr) ? FP_MuzzleLocation->GetComponentLocation() : GetActorLocation()) + SpawnRotation.RotateVector(GunOffset);
+
+	// debug log
+	UE_LOG(LogClass, Log, TEXT("Start Location: %s"), *StartLocation.ToString());
+	UE_LOG(LogClass, Log, TEXT("Spawn Rotation: %s"), *SpawnRotation.ToString());
+	UE_LOG(LogClass, Log, TEXT("Forward Vector: %s"), *FirstPersonCameraComponent->GetForwardVector().ToString());
+
 	// start location plus camera forward vector multiplied by the trace line lenght
 	FVector EndLocation = StartLocation + (FirstPersonCameraComponent->GetForwardVector() * LineLength);
 
 	// variable to handle collision events in the line trace
-	FCollisionQueryParams CollisionParams;
-	// set HitResult - if the hit was successfull FHitResult will return the hit actor
-	GetWorld()->LineTraceSingleByChannel(Hit, StartLocation, EndLocation, ECollisionChannel::ECC_PhysicsBody, CollisionParams);
-	// draw the trace line
-	DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Red, true, -1, 0, 1.0f);
+	FCollisionQueryParams CollisionParameters;
+	// set Hit - if the hit was successfull FHitResult will return the hit actor
+	GetWorld()->LineTraceSingleByChannel(Hit, StartLocation, EndLocation, ECollisionChannel::ECC_PhysicsBody, CollisionParameters);
 
-	// if Hit returned the hit actor
+	// draw the trace line
+	DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Red, false, -1, 0, 1.f);
+
+	// if Hit returned a hit actor
 	if (Hit.GetActor())
 	{
 		// check if the hit actor root component is movable
-		if (Hit.GetActor()->IsRootComponentMovable())
-		{
+		if (Hit.GetActor()->IsRootComponentMovable()) {
 			// cast the hit actor's mesh to MeshRootComp
 			UStaticMeshComponent* MeshRootComp = Cast<UStaticMeshComponent>(Hit.GetActor()->GetRootComponent());
+			// debug log
+			UE_LOG(LogClass, Log, TEXT("I Hit: %s"), *Hit.GetActor()->GetName());
+			UE_LOG(LogClass, Log, TEXT("Mesh Mass: %f"), MeshRootComp->GetMass());
 			// Add force to the hit actor's mesh root component
 			MeshRootComp->AddForce(CameraForward * 100000 * MeshRootComp->GetMass());
+		}
+
+	}
+
+	// try and play the sound if specified
+	if (FireSound != NULL)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
+	}
+
+	// try and play a firing animation if specified
+	if (FireAnimation != NULL)
+	{
+		// Get the animation object for the arms mesh
+		UAnimInstance* AnimInstance = Mesh1P->GetAnimInstance();
+		if (AnimInstance != NULL)
+		{
+			AnimInstance->Montage_Play(FireAnimation, 1.f);
 		}
 	}
 
