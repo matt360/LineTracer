@@ -80,6 +80,9 @@ ALineTracerCharacter::ALineTracerCharacter()
 
 	// Uncomment the following line to turn motion controllers on by default:
 	//bUsingMotionControllers = true;
+
+	// timer
+	bCanFire = true;
 }
 
 void ALineTracerCharacter::BeginPlay()
@@ -136,76 +139,83 @@ void ALineTracerCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 
 void ALineTracerCharacter::OnFire()
 {
-	// see if the line trace hit anything
-	FHitResult Hit;
-	// get the forawrd vector from where the player is looking
-	FVector CameraForward = FVector(FirstPersonCameraComponent->GetForwardVector());
-
-	// end the line trace 2000 units from the start
-	float LineLength = 2000;
-
-	// grab the control rotation from the actor character
-	FRotator SpawnRotation = GetControlRotation();
-	// function from the starter content - point in frot of the gun - MuzzleOffset is in camera space, so transform it to world space before
-	// offsetting from the character location to find the final muzzle position
-	FVector StartLocation = ((FP_MuzzleLocation != nullptr) ? FP_MuzzleLocation->GetComponentLocation() : GetActorLocation()) + SpawnRotation.RotateVector(GunOffset);
-
-	// start location plus camera forward vector multiplied by the trace line lenght
-	FVector EndLocation = StartLocation + (FirstPersonCameraComponent->GetForwardVector() * LineLength);
-
-	// variable to handle collision events in the line trace
-	FCollisionQueryParams CollisionParameters;
-	// set Hit - if the hit was successfull FHitResult will return the hit actor
-	GetWorld()->LineTraceSingleByChannel(Hit, StartLocation, EndLocation, ECollisionChannel::ECC_PhysicsBody, CollisionParameters);
-
-	// draw the trace line
-	DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Red, false, -1, 0, 1.f);
-
-	// if Hit returned a hit actor
-	if (Hit.GetActor())
+	if (bCanFire)
 	{
-		// check if the hit actor root component is movable
-		if (Hit.GetActor()->IsRootComponentMovable()) {
-			// cast the hit actor's mesh to MeshRootComp
-			UStaticMeshComponent* MeshRootComp = Cast<UStaticMeshComponent>(Hit.GetActor()->GetRootComponent());
-			
-			// Add force to the hit actor's mesh root component
-			MeshRootComp->AddForce(CameraForward * 100000 * MeshRootComp->GetMass());
+		bCanFire = false;
+
+		GetWorld()->GetTimerManager().SetTimer(FireDelayTimerHandle, this, &ALineTracerCharacter::ResetFire, 0.2f, false); // set to ture to loop
+
+		// see if the line trace hit anything
+		FHitResult Hit;
+		// get the forawrd vector from where the player is looking
+		FVector CameraForward = FVector(FirstPersonCameraComponent->GetForwardVector());
+
+		// end the line trace 2000 units from the start
+		float LineLength = 2000;
+
+		// grab the control rotation from the actor character
+		FRotator SpawnRotation = GetControlRotation();
+		// function from the starter content - point in frot of the gun - MuzzleOffset is in camera space, so transform it to world space before
+		// offsetting from the character location to find the final muzzle position
+		FVector StartLocation = ((FP_MuzzleLocation != nullptr) ? FP_MuzzleLocation->GetComponentLocation() : GetActorLocation()) + SpawnRotation.RotateVector(GunOffset);
+
+		// start location plus camera forward vector multiplied by the trace line lenght
+		FVector EndLocation = StartLocation + (FirstPersonCameraComponent->GetForwardVector() * LineLength);
+
+		// variable to handle collision events in the line trace
+		FCollisionQueryParams CollisionParameters;
+		// set Hit - if the hit was successfull FHitResult will return the hit actor
+		GetWorld()->LineTraceSingleByChannel(Hit, StartLocation, EndLocation, ECollisionChannel::ECC_PhysicsBody, CollisionParameters);
+
+		// draw the trace line
+		DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Red, false, -1, 0, 1.f);
+
+		// if Hit returned a hit actor
+		if (Hit.GetActor())
+		{
+			// check if the hit actor root component is movable
+			if (Hit.GetActor()->IsRootComponentMovable()) {
+				// cast the hit actor's mesh to MeshRootComp
+				UStaticMeshComponent* MeshRootComp = Cast<UStaticMeshComponent>(Hit.GetActor()->GetRootComponent());
+
+				// Add force to the hit actor's mesh root component
+				MeshRootComp->AddForce(CameraForward * 100000 * MeshRootComp->GetMass());
+			}
+
 		}
 
-	}
-
-	// try and play the sound if specified
-	if (FireSound != NULL)
-	{
-		UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
-	}
-
-	// try and play a firing animation if specified
-	if (FireAnimation != NULL)
-	{
-		// Get the animation object for the arms mesh
-		UAnimInstance* AnimInstance = Mesh1P->GetAnimInstance();
-		if (AnimInstance != NULL)
+		// try and play the sound if specified
+		if (FireSound != NULL)
 		{
-			AnimInstance->Montage_Play(FireAnimation, 1.f);
+			UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
 		}
-	}
 
-	// try and play the sound if specified
-	if (FireSound != NULL)
-	{
-		UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
-	}
-
-	// try and play a firing animation if specified
-	if (FireAnimation != NULL)
-	{
-		// Get the animation object for the arms mesh
-		UAnimInstance* AnimInstance = Mesh1P->GetAnimInstance();
-		if (AnimInstance != NULL)
+		// try and play a firing animation if specified
+		if (FireAnimation != NULL)
 		{
-			AnimInstance->Montage_Play(FireAnimation, 1.f);
+			// Get the animation object for the arms mesh
+			UAnimInstance* AnimInstance = Mesh1P->GetAnimInstance();
+			if (AnimInstance != NULL)
+			{
+				AnimInstance->Montage_Play(FireAnimation, 1.f);
+			}
+		}
+
+		// try and play the sound if specified
+		if (FireSound != NULL)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
+		}
+
+		// try and play a firing animation if specified
+		if (FireAnimation != NULL)
+		{
+			// Get the animation object for the arms mesh
+			UAnimInstance* AnimInstance = Mesh1P->GetAnimInstance();
+			if (AnimInstance != NULL)
+			{
+				AnimInstance->Montage_Play(FireAnimation, 1.f);
+			}
 		}
 	}
 }
@@ -321,4 +331,10 @@ bool ALineTracerCharacter::EnableTouchscreenMovement(class UInputComponent* Play
 		//PlayerInputComponent->BindTouch(EInputEvent::IE_Repeat, this, &ALineTracerCharacter::TouchUpdate);
 	}
 	return bResult;
+}
+
+void ALineTracerCharacter::ResetFire()
+{
+	bCanFire = true;
+	GetWorldTimerManager().ClearTimer(FireDelayTimerHandle);
 }
