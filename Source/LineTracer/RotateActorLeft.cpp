@@ -12,8 +12,10 @@ ARotateActorLeft::ARotateActorLeft()
 
 	// 300 - number of units away from the player in the X axis
 	Dimensions = FVector(300, 0, 0);
-	// what direction is the actor to be moved about
-	AxisVector = FVector(0, 1, 1);
+	// what direction is the actor to be moved about (set in the editor)
+	// (0, 1, -1) for going left and
+	// (0, 1, 1) for goiing right
+
 	Multiplier = 50.0f;
 }
 
@@ -42,9 +44,9 @@ void ARotateActorLeft::Tick(float DeltaTime)
 	// Set RotateValue from Dimensions vector
 	// this will return the number of units to move the actor to the new location
 	FVector RotateValue = Dimensions.RotateAngleAxis(AngleAxis, AxisVector);
-	NewLocation.X += RotateValue.X;
-	NewLocation.Y += RotateValue.Y;
-	NewLocation.Z += RotateValue.Z;
+	NewLocation.X -= RotateValue.X;
+	NewLocation.Y -= RotateValue.Y;
+	NewLocation.Z -= RotateValue.Z;
 
 	// 
 	FRotator NewRotation = FRotator(0, AngleAxis, 0);

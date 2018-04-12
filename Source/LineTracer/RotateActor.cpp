@@ -12,8 +12,10 @@ ARotateActor::ARotateActor()
 
 	// 300 - number of units away from the player in the X axis
 	Dimensions = FVector(300, 0, 0);
-	// what direction is the actor to be moved about
-	//AxisVector = FVector(0, 1, 1); 
+	// what direction is the actor to be moved about (set in the editor) 
+	// (0, 1, -1) for going left and
+	// (0, 1, 1) for goiing right
+	
 	Multiplier = 50.0f;
 }
 
