@@ -24,6 +24,18 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = Movement)
 	float AngleAxis;
+
+	UPROPERTY(EditAnywhere, Category = Movement)
+	bool MoveRight;
+
+	UPROPERTY(EditAnywhere, Category = Movement)
+	bool MoveLeft;
+
+	UPROPERTY(EditAnywhere, Category = Movement)
+	bool GoUp;
+
+	UPROPERTY(EditAnywhere, Category = Movement)
+	bool GoDown;
 	
 	UPROPERTY(EditAnywhere, Category = Movement)
 	FVector Dimensions;
