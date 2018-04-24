@@ -55,7 +55,7 @@ ALineTracerCharacter::ALineTracerCharacter()
 	// timer
 	CanFire = true;
 
-	Gravity = false;
+	//Gravity = false;
 }
 
 void ALineTracerCharacter::BeginPlay()
@@ -71,11 +71,17 @@ void ALineTracerCharacter::BeginPlay()
 void ALineTracerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (MeshRootComp)
+		MeshRootComp->SetWorldLocation(GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation() + 100.f);
 }
 
 void ALineTracerCharacter::GravityGun()
 {
-	Gravity = true;
+	// get the forawrd vector from where the player is looking
+	FVector CameraForward = FVector(FirstPersonCameraComponent->GetForwardVector());
+	MeshRootComp->AddForce(CameraForward * 100000 * MeshRootComp->GetMass());
+	MeshRootComp = nullptr;
 }
 
 void ALineTracerCharacter::OnFire()
@@ -90,8 +96,8 @@ void ALineTracerCharacter::OnFire()
 
 		// see if the line trace hit anything
 		FHitResult Hit;
-		// get the forawrd vector from where the player is looking
-		FVector CameraForward = FVector(FirstPersonCameraComponent->GetForwardVector());
+		//// get the forawrd vector from where the player is looking
+		//FVector CameraForward = FVector(FirstPersonCameraComponent->GetForwardVector());
 
 		// end the line trace 2000 units from the start
 		float LineLength = 2000;
@@ -122,14 +128,14 @@ void ALineTracerCharacter::OnFire()
 				// cast the hit actor's mesh to MeshRootComp
 				MeshRootComp = Cast<UStaticMeshComponent>(Hit.GetActor()->GetRootComponent());
 
-				MeshRootComp->SetWorldLocation(GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation());
+				//MeshRootComp->SetWorldLocation(GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation());
 
 				// Add force to the hit actor's mesh root component
-				if (Gravity)
+				/*if (Gravity)
 				{
 					MeshRootComp->AddForce(CameraForward * 100000 * MeshRootComp->GetMass());
 					Gravity = false;
-				}	
+				}	*/
 
 				if (MeshRootComp->GetMaterial(0)->GetName() == "FirstPersonProjectileMaterial")
 					MeshRootComp->SetMaterial(0, Material_2);
