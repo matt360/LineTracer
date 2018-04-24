@@ -11,6 +11,9 @@ DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
 ALineTracerCharacter::ALineTracerCharacter()
 {
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	PrimaryActorTick.bCanEverTick = true;
+
 	#pragma region UE4 template code EXAPND
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(55.f, 96.0f);
@@ -52,7 +55,7 @@ ALineTracerCharacter::ALineTracerCharacter()
 	// timer
 	CanFire = true;
 
-	GravityGun = false;
+	Gravity = false;
 }
 
 void ALineTracerCharacter::BeginPlay()
@@ -62,6 +65,17 @@ void ALineTracerCharacter::BeginPlay()
 
 	//Attach gun mesh component to Skeleton, doing it here because the skeleton is not yet created in the constructor
 	FP_Gun->AttachToComponent(Mesh1P, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("GripPoint"));
+}
+
+// Called every frame
+void ARotateActor::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+}
+
+void ALineTracerCharacter::GravityGun()
+{
+	Gravity = true;
 }
 
 void ALineTracerCharacter::OnFire()
@@ -110,9 +124,12 @@ void ALineTracerCharacter::OnFire()
 
 				MeshRootComp->SetWorldLocation(GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation());
 
-
 				// Add force to the hit actor's mesh root component
-				MeshRootComp->AddForce(CameraForward * 100000 * MeshRootComp->GetMass());
+				if (Gravity)
+				{
+					MeshRootComp->AddForce(CameraForward * 100000 * MeshRootComp->GetMass());
+					Gravity = false;
+				}	
 
 				if (MeshRootComp->GetMaterial(0)->GetName() == "FirstPersonProjectileMaterial")
 					MeshRootComp->SetMaterial(0, Material_2);
@@ -121,7 +138,7 @@ void ALineTracerCharacter::OnFire()
 			}
 
 		}
-
+	
 		#pragma region UE4 template code
 		// try and play a firing animation if specified
 		if (FireAnimation != NULL)
@@ -153,6 +170,7 @@ void ALineTracerCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
 	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &ALineTracerCharacter::OnFire);
+	PlayerInputComponent->BindAction("FireRelease", IE_Pressed, this, &ALineTracerCharacter::GravityGun);
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &ALineTracerCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &ALineTracerCharacter::MoveRight);

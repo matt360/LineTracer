@@ -51,6 +51,9 @@ public:
 	#pragma endregion
 
 public:
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
 	// Gun muzzle's offset from the characters location
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	FVector GunOffset;
@@ -98,7 +101,9 @@ protected:
 	void ResetFire();
 
 	// gravity gun
-	bool GravityGun;
+	bool Gravity;
+
+	void GravityGun();
 
 	UStaticMeshComponent* MeshRootComp;
 
