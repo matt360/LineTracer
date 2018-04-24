@@ -104,7 +104,7 @@ protected:
 	bool EnableTouchscreenMovement(UInputComponent* InputComponent);
 
 	// player can fire - true
-	bool bCanFire;
+	bool CanFire;
 
 	// Handles the delay between shots
 	FTimerHandle FireDelayTimerHandle;

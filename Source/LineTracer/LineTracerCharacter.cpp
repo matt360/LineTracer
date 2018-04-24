@@ -48,7 +48,7 @@ ALineTracerCharacter::ALineTracerCharacter()
 	GunOffset = FVector(100.0f, 0.0f, 10.0f);
 
 	// timer
-	bCanFire = true;
+	CanFire = true;
 }
 
 void ALineTracerCharacter::BeginPlay()
@@ -88,11 +88,12 @@ void ALineTracerCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 
 void ALineTracerCharacter::OnFire()
 {
-	if (bCanFire)
+	if (CanFire)
 	{
-		bCanFire = false;
+		CanFire = false;
 
-		GetWorld()->GetTimerManager().SetTimer(FireDelayTimerHandle, this, &ALineTracerCharacter::ResetFire, 0.2f, false); // set to ture to loop
+		// set to true to loop
+		GetWorld()->GetTimerManager().SetTimer(FireDelayTimerHandle, this, &ALineTracerCharacter::ResetFire, 0.2f, false); 
 
 		// see if the line trace hit anything
 		FHitResult Hit;
@@ -129,9 +130,11 @@ void ALineTracerCharacter::OnFire()
 
 				// Add force to the hit actor's mesh root component
 				MeshRootComp->AddForce(CameraForward * 100000 * MeshRootComp->GetMass());
-				
-				
-				MeshRootComp->SetMaterial(0, Material_1);
+
+				if (MeshRootComp->GetMaterial(0)->GetName() == "FirstPersonProjectileMaterial")
+					MeshRootComp->SetMaterial(0, Material_2);
+				else
+					MeshRootComp->SetMaterial(0, Material_1);
 			}
 
 		}
@@ -244,6 +247,6 @@ bool ALineTracerCharacter::EnableTouchscreenMovement(class UInputComponent* Play
 
 void ALineTracerCharacter::ResetFire()
 {
-	bCanFire = true;
+	CanFire = true;
 	GetWorldTimerManager().ClearTimer(FireDelayTimerHandle);
 }
