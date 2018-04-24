@@ -74,6 +74,7 @@ void ALineTracerCharacter::Tick(float DeltaTime)
 
 	if (MeshRootComp)
 		MeshRootComp->SetWorldLocation(GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation() + 100.f);
+		//MeshRootComp->SetRotation(GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorRotation());
 }
 
 void ALineTracerCharacter::GravityGun()
