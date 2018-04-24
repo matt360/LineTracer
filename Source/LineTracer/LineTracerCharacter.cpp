@@ -131,7 +131,7 @@ void ALineTracerCharacter::OnFire()
 
 				// Add force to the hit actor's mesh root component
 				MeshRootComp->AddForce(CameraForward * 100000 * MeshRootComp->GetMass());
-				MeshRootComp->SetMaterial(0, Material);
+				MeshRootComp->SetMaterial(0, Material_1);
 			}
 
 		}
