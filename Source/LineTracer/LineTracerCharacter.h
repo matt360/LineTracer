@@ -40,11 +40,6 @@ public:
 	// Base look up/down rate, in deg/sec. Other scaling may affect final rate. 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseLookUpRate;
-	#pragma endregion
-
-	// Gun muzzle's offset from the characters location
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay)
-	FVector GunOffset;
 
 	// Projectile class to spawn
 	UPROPERTY(EditDefaultsOnly, Category=Projectile)
@@ -53,6 +48,11 @@ public:
 	// Sound to play each time we fire 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay)
 	class USoundBase* FireSound;
+	#pragma endregion
+
+	// Gun muzzle's offset from the characters location
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	FVector GunOffset;
 
 	// AnimMontage to play each time we fire 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
@@ -64,10 +64,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	UMaterialInterface* Material_2;
 
+	#pragma region UE4 template code EXPAND
 protected:
-	// Fires a projectile. 
-	void OnFire();
-
 	// Handles moving forward/backward 
 	void MoveForward(float Val);
 
@@ -96,6 +94,11 @@ protected:
 	// End of APawn interface
 
 	bool EnableTouchscreenMovement(UInputComponent* InputComponent);
+	#pragma endregion
+
+protected:
+	// Fires a projectile. 
+	void OnFire();
 
 	// player can fire - true
 	bool CanFire;
@@ -107,10 +110,11 @@ protected:
 	void ResetFire();
 
 public:
+	#pragma region UE4 template code EXAPND
 	// Returns Mesh1P subobject *
 	FORCEINLINE class USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
 	// Returns FirstPersonCameraComponent subobject *
 	FORCEINLINE class UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
-
+	#pragma endregion
 };
 
