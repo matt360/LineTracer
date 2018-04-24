@@ -1,4 +1,3 @@
-// Copyright 1998-2017 Epic Games, Inc. All Rights Reserved.
 #pragma once
 #include "GameFramework/Character.h"
 #include "LineTracerCharacter.generated.h"
@@ -72,6 +71,9 @@ public:
 	/** AnimMontage to play each time we fire */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	class UAnimMontage* FireAnimation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	UMaterialInterface* Material;
 
 	///** Whether to use motion controller location for aiming. */
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)

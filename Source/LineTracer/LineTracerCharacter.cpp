@@ -1,5 +1,3 @@
-// Copyright 1998-2017 Epic Games, Inc. All Rights Reserved.
-
 #include "LineTracer.h"
 #include "LineTracerCharacter.h"
 #include "LineTracerProjectile.h"
@@ -7,13 +5,9 @@
 #include "GameFramework/InputSettings.h"
 #include "Kismet/HeadMountedDisplayFunctionLibrary.h"
 #include "MotionControllerComponent.h"
-// include draw debug helpers header file
 #include "DrawDebugHelpers.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
-
-//////////////////////////////////////////////////////////////////////////
-// ALineTracerCharacter
 
 ALineTracerCharacter::ALineTracerCharacter()
 {
@@ -106,9 +100,6 @@ void ALineTracerCharacter::BeginPlay()
 	//}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// Input
-
 void ALineTracerCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
 	// set up gameplay key bindings
@@ -180,6 +171,7 @@ void ALineTracerCharacter::OnFire()
 
 				// Add force to the hit actor's mesh root component
 				MeshRootComp->AddForce(CameraForward * 100000 * MeshRootComp->GetMass());
+				MeshRootComp->SetMaterial(0, Material);
 			}
 
 		}
