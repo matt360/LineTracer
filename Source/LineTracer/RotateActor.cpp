@@ -32,6 +32,7 @@ void ARotateActor::BeginPlay()
 	{
 		Axis = FVector(0, 1, 1);
 	}
+
 }
 
 // Called every frame
