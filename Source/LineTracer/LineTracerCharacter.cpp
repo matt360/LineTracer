@@ -51,6 +51,8 @@ ALineTracerCharacter::ALineTracerCharacter()
 
 	// timer
 	CanFire = true;
+
+	GravityGun = false;
 }
 
 void ALineTracerCharacter::BeginPlay()
@@ -104,7 +106,10 @@ void ALineTracerCharacter::OnFire()
 			// check if the hit actor root component is movable
 			if (Hit.GetActor()->IsRootComponentMovable()) {
 				// cast the hit actor's mesh to MeshRootComp
-				UStaticMeshComponent* MeshRootComp = Cast<UStaticMeshComponent>(Hit.GetActor()->GetRootComponent());
+				MeshRootComp = Cast<UStaticMeshComponent>(Hit.GetActor()->GetRootComponent());
+
+				MeshRootComp->SetWorldLocation(GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation());
+
 
 				// Add force to the hit actor's mesh root component
 				MeshRootComp->AddForce(CameraForward * 100000 * MeshRootComp->GetMass());
@@ -117,7 +122,7 @@ void ALineTracerCharacter::OnFire()
 
 		}
 
-		#pragma region UE4 template code EXPAND
+		#pragma region UE4 template code
 		// try and play a firing animation if specified
 		if (FireAnimation != NULL)
 		{
@@ -138,7 +143,7 @@ void ALineTracerCharacter::ResetFire()
 	GetWorldTimerManager().ClearTimer(FireDelayTimerHandle);
 }
 
-#pragma region UE4 template code EXAPND
+#pragma region UE4 template code
 void ALineTracerCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
 	// set up gameplay key bindings
@@ -147,11 +152,7 @@ void ALineTracerCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
-	//InputComponent->BindTouch(EInputEvent::IE_Pressed, this, &ALineTracerCharacter::TouchStarted);
-	if (EnableTouchscreenMovement(PlayerInputComponent) == false)
-	{
-		PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &ALineTracerCharacter::OnFire);
-	}
+	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &ALineTracerCharacter::OnFire);
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &ALineTracerCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &ALineTracerCharacter::MoveRight);
@@ -163,31 +164,6 @@ void ALineTracerCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 	PlayerInputComponent->BindAxis("TurnRate", this, &ALineTracerCharacter::TurnAtRate);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("LookUpRate", this, &ALineTracerCharacter::LookUpAtRate);
-}
-
-void ALineTracerCharacter::BeginTouch(const ETouchIndex::Type FingerIndex, const FVector Location)
-{
-	if (TouchItem.bIsPressed == true)
-	{
-		return;
-	}
-	TouchItem.bIsPressed = true;
-	TouchItem.FingerIndex = FingerIndex;
-	TouchItem.Location = Location;
-	TouchItem.bMoved = false;
-}
-
-void ALineTracerCharacter::EndTouch(const ETouchIndex::Type FingerIndex, const FVector Location)
-{
-	if (TouchItem.bIsPressed == false)
-	{
-		return;
-	}
-	if ((FingerIndex == TouchItem.FingerIndex) && (TouchItem.bMoved == false))
-	{
-		OnFire();
-	}
-	TouchItem.bIsPressed = false;
 }
 
 void ALineTracerCharacter::MoveForward(float Value)
@@ -218,20 +194,5 @@ void ALineTracerCharacter::LookUpAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
 	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
-}
-
-bool ALineTracerCharacter::EnableTouchscreenMovement(class UInputComponent* PlayerInputComponent)
-{
-	bool bResult = false;
-	if (FPlatformMisc::GetUseVirtualJoysticks() || GetDefault<UInputSettings>()->bUseMouseForTouch)
-	{
-		bResult = true;
-		PlayerInputComponent->BindTouch(EInputEvent::IE_Pressed, this, &ALineTracerCharacter::BeginTouch);
-		PlayerInputComponent->BindTouch(EInputEvent::IE_Released, this, &ALineTracerCharacter::EndTouch);
-
-		//Commenting this out to be more consistent with FPS BP template.
-		//PlayerInputComponent->BindTouch(EInputEvent::IE_Repeat, this, &ALineTracerCharacter::TouchUpdate);
-	}
-	return bResult;
 }
 #pragma endregion

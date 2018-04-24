@@ -7,7 +7,7 @@ class UInputComponent;
 UCLASS(config=Game)
 class ALineTracerCharacter : public ACharacter
 {
-	#pragma region UE4 template code EXPAND
+	#pragma region UE4 template code 
 	GENERATED_BODY()
 
 	// Pawn mesh: 1st person view (arms; seen only by self) 
@@ -64,8 +64,8 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	UMaterialInterface* Material_2;
-
-	#pragma region UE4 template code EXPAND
+	
+	#pragma region UE4 template code 
 protected:
 	// Handles moving forward/backward 
 	void MoveForward(float Val);
@@ -76,19 +76,6 @@ protected:
 	void TurnAtRate(float Rate);
 
 	void LookUpAtRate(float Rate);
-
-	struct TouchData
-	{
-		TouchData() { bIsPressed = false;Location=FVector::ZeroVector;}
-		bool bIsPressed;
-		ETouchIndex::Type FingerIndex;
-		FVector Location;
-		bool bMoved;
-	};
-	void BeginTouch(const ETouchIndex::Type FingerIndex, const FVector Location);
-	void EndTouch(const ETouchIndex::Type FingerIndex, const FVector Location);
-	TouchData	TouchItem;
-	
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
@@ -109,6 +96,11 @@ protected:
 
 	// Resets the players ability to fire
 	void ResetFire();
+
+	// gravity gun
+	bool GravityGun;
+
+	UStaticMeshComponent* MeshRootComp;
 
 	#pragma region UE4 template code EXAPND
 public:
