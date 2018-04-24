@@ -55,7 +55,7 @@ ALineTracerCharacter::ALineTracerCharacter()
 	// timer
 	CanFire = true;
 
-	//Gravity = false;
+	Gravity = false;
 }
 
 void ALineTracerCharacter::BeginPlay()
