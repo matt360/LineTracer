@@ -11,6 +11,7 @@ DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
 ALineTracerCharacter::ALineTracerCharacter()
 {
+	#pragma region UE4 template code EXAPND
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(55.f, 96.0f);
 
@@ -43,6 +44,7 @@ ALineTracerCharacter::ALineTracerCharacter()
 	FP_MuzzleLocation = CreateDefaultSubobject<USceneComponent>(TEXT("MuzzleLocation"));
 	FP_MuzzleLocation->SetupAttachment(FP_Gun);
 	FP_MuzzleLocation->SetRelativeLocation(FVector(0.2f, 48.4f, -10.6f));
+	#pragma endregion
 
 	// Default offset from the character location for projectiles to spawn
 	GunOffset = FVector(100.0f, 0.0f, 10.0f);
@@ -58,32 +60,6 @@ void ALineTracerCharacter::BeginPlay()
 
 	//Attach gun mesh component to Skeleton, doing it here because the skeleton is not yet created in the constructor
 	FP_Gun->AttachToComponent(Mesh1P, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("GripPoint"));
-}
-
-void ALineTracerCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
-{
-	// set up gameplay key bindings
-	check(PlayerInputComponent);
-
-	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
-	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
-
-	//InputComponent->BindTouch(EInputEvent::IE_Pressed, this, &ALineTracerCharacter::TouchStarted);
-	if (EnableTouchscreenMovement(PlayerInputComponent) == false)
-	{
-		PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &ALineTracerCharacter::OnFire);
-	}
-
-	PlayerInputComponent->BindAxis("MoveForward", this, &ALineTracerCharacter::MoveForward);
-	PlayerInputComponent->BindAxis("MoveRight", this, &ALineTracerCharacter::MoveRight);
-
-	// We have 2 versions of the rotation bindings to handle different kinds of devices differently
-	// "turn" handles devices that provide an absolute delta, such as a mouse.
-	// "turnrate" is for devices that we choose to treat as a rate of change, such as an analog joystick
-	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
-	PlayerInputComponent->BindAxis("TurnRate", this, &ALineTracerCharacter::TurnAtRate);
-	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
-	PlayerInputComponent->BindAxis("LookUpRate", this, &ALineTracerCharacter::LookUpAtRate);
 }
 
 void ALineTracerCharacter::OnFire()
@@ -175,6 +151,33 @@ void ALineTracerCharacter::ResetFire()
 	GetWorldTimerManager().ClearTimer(FireDelayTimerHandle);
 }
 
+#pragma region UE4 template code EXAPND
+void ALineTracerCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
+{
+	// set up gameplay key bindings
+	check(PlayerInputComponent);
+
+	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
+	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
+
+	//InputComponent->BindTouch(EInputEvent::IE_Pressed, this, &ALineTracerCharacter::TouchStarted);
+	if (EnableTouchscreenMovement(PlayerInputComponent) == false)
+	{
+		PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &ALineTracerCharacter::OnFire);
+	}
+
+	PlayerInputComponent->BindAxis("MoveForward", this, &ALineTracerCharacter::MoveForward);
+	PlayerInputComponent->BindAxis("MoveRight", this, &ALineTracerCharacter::MoveRight);
+
+	// We have 2 versions of the rotation bindings to handle different kinds of devices differently
+	// "turn" handles devices that provide an absolute delta, such as a mouse.
+	// "turnrate" is for devices that we choose to treat as a rate of change, such as an analog joystick
+	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
+	PlayerInputComponent->BindAxis("TurnRate", this, &ALineTracerCharacter::TurnAtRate);
+	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
+	PlayerInputComponent->BindAxis("LookUpRate", this, &ALineTracerCharacter::LookUpAtRate);
+}
+
 void ALineTracerCharacter::BeginTouch(const ETouchIndex::Type FingerIndex, const FVector Location)
 {
 	if (TouchItem.bIsPressed == true)
@@ -244,3 +247,4 @@ bool ALineTracerCharacter::EnableTouchscreenMovement(class UInputComponent* Play
 	}
 	return bResult;
 }
+#pragma endregion

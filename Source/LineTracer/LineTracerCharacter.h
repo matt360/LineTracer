@@ -50,6 +50,7 @@ public:
 	class USoundBase* FireSound;
 	#pragma endregion
 
+public:
 	// Gun muzzle's offset from the characters location
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	FVector GunOffset;
@@ -109,8 +110,8 @@ protected:
 	// Resets the players ability to fire
 	void ResetFire();
 
-public:
 	#pragma region UE4 template code EXAPND
+public:
 	// Returns Mesh1P subobject *
 	FORCEINLINE class USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
 	// Returns FirstPersonCameraComponent subobject *
