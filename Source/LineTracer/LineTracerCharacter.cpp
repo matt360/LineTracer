@@ -68,7 +68,7 @@ void ALineTracerCharacter::BeginPlay()
 }
 
 // Called every frame
-void ARotateActor::Tick(float DeltaTime)
+void ALineTracerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
