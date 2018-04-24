@@ -96,8 +96,6 @@ void ALineTracerCharacter::OnFire()
 
 		// see if the line trace hit anything
 		FHitResult Hit;
-		//// get the forawrd vector from where the player is looking
-		//FVector CameraForward = FVector(FirstPersonCameraComponent->GetForwardVector());
 
 		// end the line trace 2000 units from the start
 		float LineLength = 2000;
@@ -127,15 +125,6 @@ void ALineTracerCharacter::OnFire()
 			if (Hit.GetActor()->IsRootComponentMovable()) {
 				// cast the hit actor's mesh to MeshRootComp
 				MeshRootComp = Cast<UStaticMeshComponent>(Hit.GetActor()->GetRootComponent());
-
-				//MeshRootComp->SetWorldLocation(GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation());
-
-				// Add force to the hit actor's mesh root component
-				/*if (Gravity)
-				{
-					MeshRootComp->AddForce(CameraForward * 100000 * MeshRootComp->GetMass());
-					Gravity = false;
-				}	*/
 
 				if (MeshRootComp->GetMaterial(0)->GetName() == "FirstPersonProjectileMaterial")
 					MeshRootComp->SetMaterial(0, Material_2);
