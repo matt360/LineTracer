@@ -66,6 +66,7 @@ void ALineTracerCharacter::OnFire()
 {
 	if (CanFire)
 	{
+		// set CanFire to false. Later set to true in the ResetFire() function
 		CanFire = false;
 
 		// set to true to loop
@@ -81,6 +82,7 @@ void ALineTracerCharacter::OnFire()
 
 		// grab the control rotation from the actor character
 		FRotator SpawnRotation = GetControlRotation();
+
 		// function from the starter content - point in frot of the gun - MuzzleOffset is in camera space, so transform it to world space before
 		// offsetting from the character location to find the final muzzle position
 		FVector StartLocation = ((FP_MuzzleLocation != nullptr) ? FP_MuzzleLocation->GetComponentLocation() : GetActorLocation()) + SpawnRotation.RotateVector(GunOffset);
