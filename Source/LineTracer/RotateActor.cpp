@@ -26,11 +26,11 @@ void ARotateActor::BeginPlay()
 	// (0, 1, 1) for goiing right
 	if (GoDown)
 	{
-		AxisVector = FVector(0, 1, -1);
+		Axis = FVector(0, 1, -1);
 	}
 	else if (GoUp)
 	{
-		AxisVector = FVector(0, 1, 1);
+		Axis = FVector(0, 1, 1);
 	}
 }
 
@@ -44,29 +44,29 @@ void ARotateActor::Tick(float DeltaTime)
 
 	// degree around the point the actor should move to
 	// DeltaTime times Multiplier for smooth movement
-	AngleAxis += DeltaTime * Multiplier;
+	Angle += DeltaTime * Multiplier;
 
-	// when the actor made a full circle around the player - reset AngleAxis
-	if (AngleAxis >= 360.0f) { AngleAxis = 0; } 
+	// when the actor made a full circle around the player - reset Angle
+	if (Angle >= 360.0f)
+		Angle = 0;
 
 	// Set RotateValue from Dimensions vector
 	// this will return the number of units to move the actor to the new location
-	FVector RotateValue = Dimensions.RotateAngleAxis(AngleAxis, AxisVector);
+	FVector RotateValue = Dimensions.RotateAngleAxis(Angle, Axis);
 	if (MoveRight)
 	{
 		NewLocation.X += RotateValue.X;
 		NewLocation.Y += RotateValue.Y;
 		NewLocation.Z += RotateValue.Z;
 	}
-	if (MoveLeft)
+	else if (MoveLeft)
 	{
 		NewLocation.X -= RotateValue.X;
 		NewLocation.Y -= RotateValue.Y;
 		NewLocation.Z -= RotateValue.Z;
 	}
 
-	// 
-	FRotator NewRotation = FRotator(0, AngleAxis, 0);
+	FRotator NewRotation = FRotator(0, Angle, 0);
 
 	FQuat QuatRotation = FQuat(NewRotation);
 

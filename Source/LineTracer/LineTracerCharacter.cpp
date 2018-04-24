@@ -117,6 +117,7 @@ void ALineTracerCharacter::OnFire()
 
 		}
 
+		#pragma region UE4 template code EXPAND
 		// try and play a firing animation if specified
 		if (FireAnimation != NULL)
 		{
@@ -127,6 +128,7 @@ void ALineTracerCharacter::OnFire()
 				AnimInstance->Montage_Play(FireAnimation, 1.f);
 			}
 		}
+		#pragma endregion
 	}
 }
 

@@ -23,7 +23,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(EditAnywhere, Category = Movement)
-	float AngleAxis;
+	float Angle;
 
 	UPROPERTY(EditAnywhere, Category = Movement)
 	bool MoveRight;
@@ -41,7 +41,7 @@ public:
 	FVector Dimensions;
 
 	UPROPERTY(EditAnywhere, Category = Movement)
-	FVector AxisVector;
+	FVector Axis;
 
 	UPROPERTY(EditAnywhere, Category = Movement)
 	float Multiplier;
