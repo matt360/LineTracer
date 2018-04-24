@@ -74,8 +74,6 @@ void ALineTracerCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 		PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &ALineTracerCharacter::OnFire);
 	}
 
-	PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &ALineTracerCharacter::OnResetVR);
-
 	PlayerInputComponent->BindAxis("MoveForward", this, &ALineTracerCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &ALineTracerCharacter::MoveRight);
 
@@ -131,6 +129,8 @@ void ALineTracerCharacter::OnFire()
 
 				// Add force to the hit actor's mesh root component
 				MeshRootComp->AddForce(CameraForward * 100000 * MeshRootComp->GetMass());
+				
+				
 				MeshRootComp->SetMaterial(0, Material_1);
 			}
 
@@ -170,11 +170,6 @@ void ALineTracerCharacter::OnFire()
 			}
 		}
 	}
-}
-
-void ALineTracerCharacter::OnResetVR()
-{
-	UHeadMountedDisplayFunctionLibrary::ResetOrientationAndPosition();
 }
 
 void ALineTracerCharacter::BeginTouch(const ETouchIndex::Type FingerIndex, const FVector Location)
