@@ -156,12 +156,6 @@ void ALineTracerCharacter::OnFire()
 			}
 		}
 
-		// try and play the sound if specified
-		//if (FireSound != NULL)
-		//{
-		//	UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
-		//}
-
 		// try and play a firing animation if specified
 		if (FireAnimation != NULL)
 		{
@@ -173,6 +167,12 @@ void ALineTracerCharacter::OnFire()
 			}
 		}
 	}
+}
+
+void ALineTracerCharacter::ResetFire()
+{
+	CanFire = true;
+	GetWorldTimerManager().ClearTimer(FireDelayTimerHandle);
 }
 
 void ALineTracerCharacter::BeginTouch(const ETouchIndex::Type FingerIndex, const FVector Location)
@@ -243,10 +243,4 @@ bool ALineTracerCharacter::EnableTouchscreenMovement(class UInputComponent* Play
 		//PlayerInputComponent->BindTouch(EInputEvent::IE_Repeat, this, &ALineTracerCharacter::TouchUpdate);
 	}
 	return bResult;
-}
-
-void ALineTracerCharacter::ResetFire()
-{
-	CanFire = true;
-	GetWorldTimerManager().ClearTimer(FireDelayTimerHandle);
 }
