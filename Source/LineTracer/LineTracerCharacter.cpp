@@ -59,8 +59,8 @@ ALineTracerCharacter::ALineTracerCharacter()
 
 	HoldingComp = CreateDefaultSubobject<USceneComponent>(TEXT("HoldingComponent"));
 	HoldingComp->SetupAttachment(FP_MuzzleLocation);
-	HoldingComp->RelativeLocation.X = 350.0f;
-	HoldingComp->RelativeLocation.Y = 150.0f;
+	HoldingComp->RelativeLocation.X = 50.0f;
+	//HoldingComp->RelativeLocation.Y = 150.0f;
 }
 
 void ALineTracerCharacter::BeginPlay()
@@ -87,6 +87,7 @@ void ALineTracerCharacter::GravityGun()
 {
 	// get the forawrd vector from where the player is looking
 	FVector CameraForward = FVector(FirstPersonCameraComponent->GetForwardVector());
+	MeshRootComp->SetMaterial(0, Material_2);
 	MeshRootComp->AddForce(CameraForward * 100000 * MeshRootComp->GetMass());
 	MeshRootComp = nullptr;
 }
@@ -132,11 +133,9 @@ void ALineTracerCharacter::OnFire()
 			if (Hit.GetActor()->IsRootComponentMovable()) {
 				// cast the hit actor's mesh to MeshRootComp
 				MeshRootComp = Cast<UStaticMeshComponent>(Hit.GetActor()->GetRootComponent());
-
-				if (MeshRootComp->GetMaterial(0)->GetName() == "FirstPersonProjectileMaterial")
-					MeshRootComp->SetMaterial(0, Material_2);
-				else
-					MeshRootComp->SetMaterial(0, Material_1);
+				// Set material to glass
+				MeshRootComp->SetMaterial(0, Material_1);
+				//if (MeshRootComp->GetMaterial(0)->GetName() == "FirstPersonProjectileMaterial")
 			}
 
 		}
