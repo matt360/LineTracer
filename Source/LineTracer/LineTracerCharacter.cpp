@@ -58,8 +58,9 @@ ALineTracerCharacter::ALineTracerCharacter()
 	Gravity = false;
 
 	HoldingComp = CreateDefaultSubobject<USceneComponent>(TEXT("HoldingComponent"));
-	HoldingComp->RelativeLocation.Y = 100.0f;
 	HoldingComp->SetupAttachment(FP_MuzzleLocation);
+	HoldingComp->RelativeLocation.X = 350.0f;
+	HoldingComp->RelativeLocation.Y = 150.0f;
 }
 
 void ALineTracerCharacter::BeginPlay()
