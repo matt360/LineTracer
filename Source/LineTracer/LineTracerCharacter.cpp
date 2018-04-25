@@ -77,7 +77,7 @@ void ALineTracerCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	if (MeshRootComp)
-		MeshRootComp->SetActorLocationAndRotation(HoldingComp->GetComponentLocation(), HoldingComp->GetComponentRotation());
+		MeshRootComp->SetWorldLocationAndRotation(HoldingComp->GetComponentLocation(), HoldingComp->GetComponentRotation());
 		//MeshRootComp->SetWorldLocation(GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation() + 100.f);
 		//MeshRootComp->SetRotation(GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorRotation());
 }
