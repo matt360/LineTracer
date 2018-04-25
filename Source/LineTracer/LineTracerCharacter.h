@@ -67,6 +67,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	UMaterialInterface* Material_2;
+
+	UPROPERTY(EditAnywhere)
+	USceneComponent* HoldingComp;
 	
 	#pragma region UE4 template code 
 protected:

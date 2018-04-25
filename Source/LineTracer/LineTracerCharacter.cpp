@@ -56,6 +56,10 @@ ALineTracerCharacter::ALineTracerCharacter()
 	CanFire = true;
 
 	Gravity = false;
+
+	HoldingComp = CreateDefaultSubobject<USceneComponent>(TEXT("HoldingComponent"));
+	HoldingComp->RelativeLocation.Y = 100.0f;
+	HoldingComp->SetupAttachment(FP_MuzzleLocation);
 }
 
 void ALineTracerCharacter::BeginPlay()
@@ -73,7 +77,8 @@ void ALineTracerCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	if (MeshRootComp)
-		MeshRootComp->SetWorldLocation(GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation() + 100.f);
+		MeshRootComp->SetActorLocationAndRotation(HoldingComp->GetComponentLocation(), HoldingComp->GetComponentRotation());
+		//MeshRootComp->SetWorldLocation(GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation() + 100.f);
 		//MeshRootComp->SetRotation(GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorRotation());
 }
 
