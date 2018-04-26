@@ -14,7 +14,6 @@ ALineTracerCharacter::ALineTracerCharacter()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	#pragma region UE4 template code EXAPND
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(55.f, 96.0f);
 
@@ -47,7 +46,6 @@ ALineTracerCharacter::ALineTracerCharacter()
 	FP_MuzzleLocation = CreateDefaultSubobject<USceneComponent>(TEXT("MuzzleLocation"));
 	FP_MuzzleLocation->SetupAttachment(FP_Gun);
 	FP_MuzzleLocation->SetRelativeLocation(FVector(0.2f, 48.4f, -10.6f));
-	#pragma endregion
 
 	// Default offset from the character location for projectiles to spawn
 	GunOffset = FVector(100.0f, 0.0f, 10.0f);
@@ -59,13 +57,11 @@ ALineTracerCharacter::ALineTracerCharacter()
 
 	HoldingComp = CreateDefaultSubobject<USceneComponent>(TEXT("HoldingComponent"));
 	HoldingComp->SetupAttachment(FP_MuzzleLocation);
-	/*HoldingComp->RelativeLocation.Y = 50.0f;
-	HoldingComp->RelativeLocation.Z = 300.0f;*/
-	HoldingComp->SetRelativeLocation(FVector(0.f, 500.f, 500.f));
-	/*HoldingComp->RelativeRotation.Roll = 0.f;
-	HoldingComp->RelativeRotation.Pitch = 0.f;
-	HoldingComp->RelativeRotation.Yaw = 0.f;*/
-	HoldingComp->SetRelativeRotation(FQuat(0.f, 0.f, 0.f, 0.f));
+	HoldingComp->RelativeLocation.Y = 50.0f;
+	HoldingComp->RelativeLocation.Z = 300.0f;
+	HoldingComp->RelativeRotation.Roll = 0.0f;
+	HoldingComp->RelativeRotation.Pitch = 0.0f;
+	HoldingComp->RelativeRotation.Yaw = 0.0f;
 }
 
 void ALineTracerCharacter::BeginPlay()
@@ -145,7 +141,7 @@ void ALineTracerCharacter::OnFire()
 
 		}
 	
-		#pragma region UE4 template code
+		
 		// try and play a firing animation if specified
 		if (FireAnimation != NULL)
 		{
@@ -156,7 +152,7 @@ void ALineTracerCharacter::OnFire()
 				AnimInstance->Montage_Play(FireAnimation, 1.f);
 			}
 		}
-		#pragma endregion
+		
 	}
 }
 
@@ -166,7 +162,7 @@ void ALineTracerCharacter::ResetFire()
 	GetWorldTimerManager().ClearTimer(FireDelayTimerHandle);
 }
 
-#pragma region UE4 template code
+
 void ALineTracerCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
 	// set up gameplay key bindings
@@ -219,4 +215,4 @@ void ALineTracerCharacter::LookUpAtRate(float Rate)
 	// calculate delta for this frame from the rate information
 	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
 }
-#pragma endregion
+

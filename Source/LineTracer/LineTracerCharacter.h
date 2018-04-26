@@ -7,7 +7,6 @@ class UInputComponent;
 UCLASS(config=Game)
 class ALineTracerCharacter : public ACharacter
 {
-	#pragma region UE4 template code 
 	GENERATED_BODY()
 
 	// Pawn mesh: 1st person view (arms; seen only by self) 
@@ -48,7 +47,6 @@ public:
 	// Sound to play each time we fire 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay)
 	class USoundBase* FireSound;
-	#pragma endregion
 
 public:
 	// Called every frame
@@ -70,8 +68,7 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	USceneComponent* HoldingComp;
-	
-	#pragma region UE4 template code 
+
 protected:
 	// Handles moving forward/backward 
 	void MoveForward(float Val);
@@ -88,7 +85,6 @@ protected:
 	// End of APawn interface
 
 	bool EnableTouchscreenMovement(UInputComponent* InputComponent);
-	#pragma endregion
 
 protected:
 	// Fires a projectile. 
@@ -110,12 +106,10 @@ protected:
 
 	UStaticMeshComponent* MeshRootComp;
 
-	#pragma region UE4 template code EXAPND
 public:
 	// Returns Mesh1P subobject *
 	FORCEINLINE class USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
 	// Returns FirstPersonCameraComponent subobject *
 	FORCEINLINE class UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
-	#pragma endregion
 };
 
