@@ -54,20 +54,11 @@ public:
 
 	// Gun muzzle's offset from the characters location
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
-	FVector GunOffset;
+	FVector GunOffsetFromMuzzle;
 
 	// AnimMontage to play each time we fire 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	class UAnimMontage* FireAnimation;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
-	UMaterialInterface* Material_1;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
-	UMaterialInterface* Material_2;
-
-	UPROPERTY(EditAnywhere)
-	USceneComponent* HoldingComp;
 
 protected:
 	// Handles moving forward/backward 
@@ -100,11 +91,19 @@ protected:
 	void ResetFire();
 
 	// gravity gun
-	bool Gravity;
-
 	void GravityGun();
 
-	UStaticMeshComponent* MeshRootComp;
+	UPROPERTY(EditAnywhere)
+	USceneComponent* HeldObjectLocation;
+	
+	UPROPERTY(EditAnywhere)
+	UStaticMeshComponent* HeldObject;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	UMaterialInterface* Material_1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	UMaterialInterface* Material_2;
 
 public:
 	// Returns Mesh1P subobject *

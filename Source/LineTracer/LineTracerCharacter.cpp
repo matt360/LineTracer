@@ -48,20 +48,18 @@ ALineTracerCharacter::ALineTracerCharacter()
 	FP_MuzzleLocation->SetRelativeLocation(FVector(0.2f, 48.4f, -10.6f));
 
 	// Default offset from the character location for projectiles to spawn
-	GunOffset = FVector(100.0f, 0.0f, 10.0f);
+	GunOffsetFromMuzzle = FVector(100.0f, 0.0f, 10.0f);
 
 	// timer
 	CanFire = true;
 
-	Gravity = false;
-
-	HoldingComp = CreateDefaultSubobject<USceneComponent>(TEXT("HoldingComponent"));
-	HoldingComp->SetupAttachment(FP_MuzzleLocation);
-	HoldingComp->RelativeLocation.Y = 50.0f;
-	HoldingComp->RelativeLocation.Z = 300.0f;
-	HoldingComp->RelativeRotation.Roll = 0.0f;
-	HoldingComp->RelativeRotation.Pitch = 0.0f;
-	HoldingComp->RelativeRotation.Yaw = 0.0f;
+	HeldObjectLocation = CreateDefaultSubobject<USceneComponent>(TEXT("HeldObjectLocationonent"));
+	HeldObjectLocation->SetupAttachment(FP_MuzzleLocation);
+	HeldObjectLocation->RelativeLocation.Y = 25.0f;
+	HeldObjectLocation->RelativeLocation.Z = 150.0f;
+	HeldObjectLocation->RelativeRotation.Roll = 0.0f;
+	HeldObjectLocation->RelativeRotation.Pitch = 0.0f;
+	HeldObjectLocation->RelativeRotation.Yaw = 0.0f;
 }
 
 void ALineTracerCharacter::BeginPlay()
@@ -78,19 +76,20 @@ void ALineTracerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (MeshRootComp)
-		MeshRootComp->SetWorldLocationAndRotation(HoldingComp->GetComponentLocation(), HoldingComp->GetComponentRotation());
-		//MeshRootComp->SetWorldLocation(GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation() + 100.f);
-		//MeshRootComp->SetRotation(GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorRotation());
+	if (HeldObject)
+		HeldObject->SetWorldLocationAndRotation(HeldObjectLocation->GetComponentLocation(), HeldObjectLocation->GetComponentRotation());
+		//HeldObject->SetWorldLocation(GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation() + 100.f);
+		//HeldObject->SetRotation(GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorRotation());
 }
 
 void ALineTracerCharacter::GravityGun()
 {
 	// get the forawrd vector from where the player is looking
 	FVector CameraForward = FVector(FirstPersonCameraComponent->GetForwardVector());
-	MeshRootComp->SetMaterial(0, Material_2);
-	MeshRootComp->AddForce(CameraForward * 100000 * MeshRootComp->GetMass());
-	MeshRootComp = nullptr;
+	HeldObject->SetMaterial(0, Material_2);
+	// Take the camera's vector and mulitply by a foctor of 100000 and the mass of the held object 
+	HeldObject->AddForce(CameraForward * 100000 * HeldObject->GetMass());
+	HeldObject = nullptr;
 }
 
 void ALineTracerCharacter::OnFire()
@@ -114,7 +113,7 @@ void ALineTracerCharacter::OnFire()
 
 		// function from the starter content - point in frot of the gun - MuzzleOffset is in camera space, so transform it to world space before
 		// offsetting from the character location to find the final muzzle position
-		FVector StartLocation = ((FP_MuzzleLocation != nullptr) ? FP_MuzzleLocation->GetComponentLocation() : GetActorLocation()) + SpawnRotation.RotateVector(GunOffset);
+		FVector StartLocation = ((FP_MuzzleLocation != nullptr) ? FP_MuzzleLocation->GetComponentLocation() : GetActorLocation()) + SpawnRotation.RotateVector(GunOffsetFromMuzzle);
 
 		// start location plus camera forward vector multiplied by the trace line lenght
 		FVector EndLocation = StartLocation + (FirstPersonCameraComponent->GetForwardVector() * LineLength);
@@ -132,11 +131,11 @@ void ALineTracerCharacter::OnFire()
 		{
 			// check if the hit actor root component is movable
 			if (Hit.GetActor()->IsRootComponentMovable()) {
-				// cast the hit actor's mesh to MeshRootComp
-				MeshRootComp = Cast<UStaticMeshComponent>(Hit.GetActor()->GetRootComponent());
+				// cast the hit actor's mesh to HeldObject
+				HeldObject = Cast<UStaticMeshComponent>(Hit.GetActor()->GetRootComponent());
 				// Set material to glass
-				MeshRootComp->SetMaterial(0, Material_1);
-				//if (MeshRootComp->GetMaterial(0)->GetName() == "FirstPersonProjectileMaterial")
+				HeldObject->SetMaterial(0, Material_1);
+				//if (HeldObject->GetMaterial(0)->GetName() == "FirstPersonProjectileMaterial")
 			}
 
 		}
