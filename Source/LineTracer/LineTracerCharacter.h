@@ -94,9 +94,11 @@ protected:
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* m_HeldObject;
 	
+	// Glass material
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	UMaterialInterface* m_Material_1;
 
+	// Yellow material
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	UMaterialInterface* m_Material_2;
 

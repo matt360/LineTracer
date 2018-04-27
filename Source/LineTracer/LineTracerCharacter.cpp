@@ -11,23 +11,23 @@ DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
 ALineTracerCharacter::ALineTracerCharacter()
 {
-	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	// Set size for collision capsule
+	// set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(55.f, 96.0f);
 
 	// set our turn rates for input
 	m_BaseTurnRate = 45.f;
 	m_BaseLookUpRate = 45.f;
 
-	// Create a CameraComponent	
+	// create a CameraComponent	
 	m_CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
 	m_CameraComponent->SetupAttachment(GetCapsuleComponent());
 	m_CameraComponent->RelativeLocation = FVector(-39.56f, 1.75f, 64.f); // Position the camera
 	m_CameraComponent->bUsePawnControlRotation = true;
 
-	// Create a mesh component that will be used when being viewed from a '1st person' view (when controlling this pawn)
+	// create a mesh component that will be used when being viewed from a '1st person' view (when controlling this pawn)
 	m_Mesh1P = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterMesh1P"));
 	m_Mesh1P->SetOnlyOwnerSee(true);
 	m_Mesh1P->SetupAttachment(m_CameraComponent);
@@ -36,7 +36,7 @@ ALineTracerCharacter::ALineTracerCharacter()
 	m_Mesh1P->RelativeRotation = FRotator(1.9f, -19.19f, 5.2f);
 	m_Mesh1P->RelativeLocation = FVector(-0.5f, -4.4f, -155.7f);
 
-	// Create a gun mesh component
+	// create a gun mesh component
 	m_Gun = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("FP_Gun"));
 	m_Gun->SetOnlyOwnerSee(true);			// only the owning player will see this mesh
 	m_Gun->bCastDynamicShadow = false;
@@ -47,14 +47,16 @@ ALineTracerCharacter::ALineTracerCharacter()
 	m_MuzzleLocation->SetupAttachment(m_Gun);
 	m_MuzzleLocation->SetRelativeLocation(FVector(0.2f, 48.4f, -10.6f));
 
-	// Default offset from the character location for projectiles to spawn
+	// default offset from the character location for projectiles to spawn
 	m_GunOffsetFromMuzzle = FVector(100.0f, 0.0f, 10.0f);
 
 	// timer
 	m_CanFire = true;
-
-	m_HeldObjectLocation = CreateDefaultSubobject<USceneComponent>(TEXT("HeldObjectLocationonent"));
+	
+	m_HeldObjectLocation = CreateDefaultSubobject<USceneComponent>(TEXT("HeldObjectLocation"));
+	// attach the held object location to the muzzle 
 	m_HeldObjectLocation->SetupAttachment(m_MuzzleLocation);
+	// set the relative location (to the player) of the held object location
 	m_HeldObjectLocation->RelativeLocation.Y = 25.0f;
 	m_HeldObjectLocation->RelativeLocation.Z = 150.0f;
 	m_HeldObjectLocation->RelativeRotation.Roll = 0.0f;
@@ -64,14 +66,14 @@ ALineTracerCharacter::ALineTracerCharacter()
 
 void ALineTracerCharacter::BeginPlay()
 {
-	// Call the base class  
+	// call the base class  
 	Super::BeginPlay();
 
-	//Attach gun mesh component to Skeleton, doing it here because the skeleton is not yet created in the constructor
+	// attach gun mesh component to Skeleton, doing it here because the skeleton is not yet created in the constructor
 	m_Gun->AttachToComponent(m_Mesh1P, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("GripPoint"));
 }
 
-// Called every frame
+// called every frame
 void ALineTracerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -85,9 +87,9 @@ void ALineTracerCharacter::GravityGun()
 	// get the forawrd vector from where the player is looking
 	FVector CameraForward = FVector(m_CameraComponent->GetForwardVector());
 	m_HeldObject->SetMaterial(0, m_Material_2);
-	// Take the camera's vector and mulitply by a foctor of 100000 and the mass of the held object 
+	// take the camera's vector and mulitply by a foctor of 100000 and the mass of the held object 
 	m_HeldObject->AddForce(CameraForward * 100000 * m_HeldObject->GetMass());
-	// After releasing the held obejct, set the m_HeldObject pointer to NULL, to prepare it for the next object
+	// after releasing the held obejct, set the m_HeldObject pointer to NULL, to prepare it for the next object
 	m_HeldObject = nullptr;
 }
 
@@ -132,13 +134,11 @@ void ALineTracerCharacter::OnFire()
 			if (Hit.GetActor()->IsRootComponentMovable()) {
 				// cast the hit actor's mesh to m_HeldObject
 				m_HeldObject = Cast<UStaticMeshComponent>(Hit.GetActor()->GetRootComponent());
-				// Set material to glass
+				// set material to glass
 				m_HeldObject->SetMaterial(0, m_Material_1);
-				//if (m_HeldObject->GetMaterial(0)->GetName() == "FirstPersonProjectileMaterial")
 			}
 
 		}
-	
 		
 		// try and play a firing animation if specified
 		if (m_FireAnimation != NULL)
