@@ -11,19 +11,19 @@ class ALineTracerCharacter : public ACharacter
 
 	// Pawn mesh: 1st person view (arms; seen only by self) 
 	UPROPERTY(VisibleDefaultsOnly, Category=Mesh)
-	class USkeletalMeshComponent* Mesh1P;
+	class USkeletalMeshComponent* m_Mesh1P;
 
 	// Gun mesh: 1st person view (seen only by self) 
 	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
-	class USkeletalMeshComponent* FP_Gun;
+	class USkeletalMeshComponent* m_Gun;
 
 	// Location on gun mesh where projectiles should spawn. 
 	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
-	class USceneComponent* FP_MuzzleLocation;
+	class USceneComponent* m_MuzzleLocation;
 
 	// First person camera 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	class UCameraComponent* FirstPersonCameraComponent;
+	class UCameraComponent* m_CameraComponent;
 
 public:
 	ALineTracerCharacter();
@@ -34,19 +34,19 @@ protected:
 public:
 	// Base turn rate, in deg/sec. Other scaling may affect final turn rate. 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
-	float BaseTurnRate;
+	float m_BaseTurnRate;
 
 	// Base look up/down rate, in deg/sec. Other scaling may affect final rate. 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
-	float BaseLookUpRate;
+	float m_BaseLookUpRate;
 
 	// Projectile class to spawn
 	UPROPERTY(EditDefaultsOnly, Category=Projectile)
-	TSubclassOf<class ALineTracerProjectile> ProjectileClass;
+	TSubclassOf<class ALineTracerProjectile> m_ProjectileClass;
 
-	// Sound to play each time we fire 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay)
-	class USoundBase* FireSound;
+	// AnimMontage to play each time we fire 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	class UAnimMontage* m_FireAnimation;
 
 public:
 	// Called every frame
@@ -54,11 +54,7 @@ public:
 
 	// Gun muzzle's offset from the characters location
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
-	FVector GunOffsetFromMuzzle;
-
-	// AnimMontage to play each time we fire 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
-	class UAnimMontage* FireAnimation;
+	FVector m_GunOffsetFromMuzzle;
 
 protected:
 	// Handles moving forward/backward 
@@ -78,37 +74,38 @@ protected:
 	bool EnableTouchscreenMovement(UInputComponent* InputComponent);
 
 protected:
+	// player can fire - true
+	bool m_CanFire;
+
+	// Handles the delay between shots
+	FTimerHandle m_FireDelayTimerHandle;
+
 	// Fires a projectile. 
 	void OnFire();
 
-	// player can fire - true
-	bool CanFire;
-
-	// Handles the delay between shots
-	FTimerHandle FireDelayTimerHandle;
-
 	// Resets the players ability to fire
-	void ResetFire();
+	void ResetGun();
 
 	// gravity gun
+protected:
+	UPROPERTY(EditAnywhere)
+	USceneComponent* m_HeldObjectLocation;
+	
+	UPROPERTY(EditAnywhere)
+	UStaticMeshComponent* m_HeldObject;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	UMaterialInterface* m_Material_1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	UMaterialInterface* m_Material_2;
+
 	void GravityGun();
 
-	UPROPERTY(EditAnywhere)
-	USceneComponent* HeldObjectLocation;
-	
-	UPROPERTY(EditAnywhere)
-	UStaticMeshComponent* HeldObject;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
-	UMaterialInterface* Material_1;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
-	UMaterialInterface* Material_2;
-
 public:
-	// Returns Mesh1P subobject *
-	FORCEINLINE class USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
-	// Returns FirstPersonCameraComponent subobject *
-	FORCEINLINE class UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
+	// Returns m_Mesh1P subobject *
+	FORCEINLINE class USkeletalMeshComponent* GetMesh1P() const { return m_Mesh1P; }
+	// Returns m_CameraComponent subobject *
+	FORCEINLINE class UCameraComponent* GetFirstPersonCameraComponent() const { return m_CameraComponent; }
 };
 

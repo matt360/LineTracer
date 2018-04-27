@@ -23,27 +23,27 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(EditAnywhere, Category = Movement)
-	float Angle;
+	float m_Angle;
 
 	UPROPERTY(EditAnywhere, Category = Movement)
-	bool MoveRight;
+	bool m_MoveRight;
 
 	UPROPERTY(EditAnywhere, Category = Movement)
-	bool MoveLeft;
+	bool m_MoveLeft;
 
 	UPROPERTY(EditAnywhere, Category = Movement)
-	bool GoUp;
+	bool m_GoUp;
 
 	UPROPERTY(EditAnywhere, Category = Movement)
-	bool GoDown;
+	bool m_GoDown;
 	
 	UPROPERTY(EditAnywhere, Category = Movement)
-	FVector Dimensions;
+	FVector m_Dimensions;
 
 	UPROPERTY(EditAnywhere, Category = Movement)
-	FVector Axis;
+	FVector m_Axis;
 
 	UPROPERTY(EditAnywhere, Category = Movement)
-	float Multiplier;
+	float m_Multiplier;
 
 };
